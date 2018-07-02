@@ -54,7 +54,7 @@ var requestHandler = function(request, response) {
   //
   // Calling .end "flushes" the response's internal buffer, forcing
   // node to actually send all the data over to the client.
-  response.end('Hello, World!');
+  response.end('Hello, Nick!');
 };
 
 // These headers will allow Cross-Origin Resource Sharing (CORS).
