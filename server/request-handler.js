@@ -1,18 +1,9 @@
-/*************************************************************
+const fs = require('fs');
 
-You should implement your request handler function in this file.
-
-requestHandler is already getting passed to http.createServer()
-in basic-server.js, but it won't work as is.
-
-You'll have to figure out a way to export this function from
-this file and include it in basic-server.js so that it actually works.
-
-*Hint* Check out the node module documentation at http://nodejs.org/api/modules.html.
-
-**************************************************************/
+// message database
 let messages = [];
 
+// handle http requests
 const requestHandler = function(request, response) {
 
   const { method, url } = request;
@@ -49,30 +40,51 @@ const requestHandler = function(request, response) {
     statusCode = 404;
   }
 
+  // serve local html file 
+  if (request.url.includes('/index')) {
+    fs.readFile('client/index.html', "utf8", function(err, data){
+      if(err){
+        return console.log(err);
+      }
+      const defaultCorsHeaders = {
+        'access-control-allow-origin': '*',
+        'access-control-allow-methods': 'GET, POST, OPTIONS',
+        'access-control-allow-headers': 'content-type, accept',
+        'access-control-max-age': 10 // Seconds.
+      };
+    
+      const headers = defaultCorsHeaders;
+      headers['Content-Type'] = 'text/html';
+
+      response.writeHead(200, headers);
+      response.end(data);
+    });
+    return;
+  }
+
+
   console.log(
     'Serving request type ' + request.method + ' for url ' + request.url
   );
 
+
+  // handle headers
   const defaultCorsHeaders = {
     'access-control-allow-origin': '*',
     'access-control-allow-methods': 'GET, POST, OPTIONS',
     'access-control-allow-headers': 'content-type, accept',
     'access-control-max-age': 10 // Seconds.
   };
-
   const headers = defaultCorsHeaders;
   headers['Content-Type'] = 'text/plain';
-
   response.writeHead(statusCode, headers);
-
   const responseBody = {method, url};
-
   if (request.method === 'GET') {
     responseBody.results = messages;
   }
- 
-  response.end(JSON.stringify(responseBody));
 
+  // write data
+  response.end(JSON.stringify(responseBody));
 };
 
 exports.requestHandler = requestHandler;

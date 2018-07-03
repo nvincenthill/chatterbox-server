@@ -16,9 +16,10 @@ const ip2 = '127.0.0.1';
 //     }).listen(port2);
 // });
 
-const html = fs.readFile('../client/index.html', function(err, data) {
+const html = fs.readFile('/client/index.html', function(err, data) {
     http.createServer(function (req, res) {
       res.writeHead(200, {'Content-Type': 'text/html'});
+      console.log(data);
       res.write(data);
       res.end();
     });

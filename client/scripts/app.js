@@ -246,3 +246,5 @@ var app = {
     $('form input[type=submit]').attr('disabled', null);
   }
 };
+
+// exports.app = app;
