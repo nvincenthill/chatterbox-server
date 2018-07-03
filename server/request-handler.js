@@ -14,7 +14,9 @@ this file and include it in basic-server.js so that it actually works.
 let messages = [];
 
 const requestHandler = function(request, response) {
+
   const { method, url } = request;
+
   if (request.method === 'POST') {
     let body = [];
     request.on('error', (err) => {
@@ -23,11 +25,17 @@ const requestHandler = function(request, response) {
     }).on('end', () => {
       body = Buffer.concat(body).toString();
       messages.push(JSON.parse(body));
+      messages[messages.length - 1].objectId = messages.length;
     });
   }
 
   // handle GET requests
   if (request.method === 'GET') {
+    statusCode = 200;
+  }
+
+  // handle OPTIONS requests
+  if (request.method === 'OPTIONS') {
     statusCode = 200;
   }
 
@@ -47,7 +55,7 @@ const requestHandler = function(request, response) {
 
   const defaultCorsHeaders = {
     'access-control-allow-origin': '*',
-    'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'access-control-allow-methods': 'GET, POST, OPTIONS',
     'access-control-allow-headers': 'content-type, accept',
     'access-control-max-age': 10 // Seconds.
   };
@@ -57,10 +65,14 @@ const requestHandler = function(request, response) {
 
   response.writeHead(statusCode, headers);
 
-  const responseBody = { method, url};
-  responseBody.results = messages;
+  const responseBody = {method, url};
 
+  if (request.method === 'GET') {
+    responseBody.results = messages;
+  }
+ 
   response.end(JSON.stringify(responseBody));
+
 };
 
 exports.requestHandler = requestHandler;

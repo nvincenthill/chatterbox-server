@@ -1,6 +1,16 @@
 var request = require('request');
 var expect = require('chai').expect;
 
+// test syntax
+// describe('tests', function () {
+//   it('does an async thing', function (done) {
+//     do_an_async_thing(test_data, function (data) {
+//       expect(data).to.be.ok();
+//       done();
+//     });
+//   });
+// });
+
 describe('server', function() {
   it('should respond to GET requests for /classes/messages with a 200 status code', function(done) {
     request('http://127.0.0.1:3000/classes/messages', function(error, response, body) {
@@ -73,5 +83,59 @@ describe('server', function() {
     });
   });
 
+  // student created tests
+
+  it('should send back a headers object', function(done) {
+    request('http://127.0.0.1:3000/classes/messages', function(error, response, body) {
+      expect(response.headers).to.be.an('object');
+      // console.log('head', Object.keys(response.headers));
+      done();
+    });
+  });
+
+  it('should respond to OPTIONS requests for /classes/messages with a 200 status code', function(done) {
+    var requestParams = {method: 'OPTIONS',
+      uri: 'http://127.0.0.1:3000/classes/messages'
+    };
+    request(requestParams, function(error, response, body) {
+      expect(response.statusCode).to.equal(200);
+      done();
+    });
+  });
+
+  it('should respond to OPTIONS requests for /classes/messages with request method options', function(done) {
+    var requestParams = {method: 'OPTIONS',
+      uri: 'http://127.0.0.1:3000/classes/messages'
+    };
+  request(requestParams, function(error, response, body) {
+    console.log(body);
+      expect(response.headers['access-control-allow-methods']).to.equal('GET, POST, OPTIONS');
+      done();
+    });
+  });
+
+  it('should not send back message data in response to a POST request', function(done) {
+    var requestParams = {
+      method: 'POST',
+      uri: 'http://127.0.0.1:3000/classes/messages',
+      json: {
+        username: 'Jono',
+        text: 'Do my bidding!'}
+      };
+    request(requestParams, function(error, response, body) {
+      expect(body.results).to.equal(undefined);
+      done();
+    });
+  });
+
+it('should respond to OPTIONS requests for /classes/messages with a 200 status code', function(done) {
+    var requestParams = {method: 'OPTIONS',
+      uri: 'http://127.0.0.1:3000/classes/messages'
+    };
+    request(requestParams, function(error, response, body) {
+      expect(response.statusCode).to.equal(200);
+      done();
+    });
+  });
 
 });

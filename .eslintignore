@@ -4,3 +4,4 @@
 **/lib
 **/vendor
 **/*.min.js
+/server/file-server.js

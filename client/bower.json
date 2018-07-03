@@ -1,0 +1,22 @@
+{
+  "name": "chatterbox client",
+  "homepage": "https://github.com/nvincenthill/hrsf99-chatterbox-server",
+  "authors": [
+    "Hack Reactor Student <student@hackreactor.com>"
+  ],
+  "description": "client",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "client/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^3.3.1",
+    "underscore": "^1.9.1"
+  }
+}
