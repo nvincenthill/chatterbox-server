@@ -12,7 +12,41 @@ this file and include it in basic-server.js so that it actually works.
 
 **************************************************************/
 
-var requestHandler = function(request, response) {
+let messages = [];
+
+const requestHandler = function(request, response) {
+  console.log('************************************');
+  console.log(request);
+
+  let statusCode = null;
+  let data = {};
+
+
+  // handle GET requests
+  if (request.method === 'GET') {
+    statusCode = 200;
+    data.results = messages;
+  }
+
+  // handle POST requests
+  if (request.method === 'POST' && request.url === '????') {
+    statusCode = 201;
+    if (request._postData !== undefined) {
+      let msg = {
+        username: request._postData.username || 'n/a',
+        text: request._postData.text || 'n/a'
+      };
+      // add message to messages
+      messages.push(msg);
+      data.results = messages;
+    }
+  }
+
+  // handle non-existent endpoints
+  if (request.url !== '/classes/messages') {
+    statusCode = 404;
+  }
+
   // Request and Response come from node's http module.
   //
   // They include information about both the incoming request, such as
@@ -31,11 +65,16 @@ var requestHandler = function(request, response) {
     'Serving request type ' + request.method + ' for url ' + request.url
   );
 
-  // The outgoing status.
-  var statusCode = 200;
+
+  const defaultCorsHeaders = {
+    'access-control-allow-origin': '*',
+    'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'access-control-allow-headers': 'content-type, accept',
+    'access-control-max-age': 10 // Seconds.
+  };
 
   // See the note below about CORS headers.
-  var headers = defaultCorsHeaders;
+  const headers = defaultCorsHeaders;
 
   // Tell the client we are sending them plain text.
   //
@@ -54,7 +93,13 @@ var requestHandler = function(request, response) {
   //
   // Calling .end "flushes" the response's internal buffer, forcing
   // node to actually send all the data over to the client.
-  response.end('Hello, Nick!');
+  data = JSON.stringify(data);
+  response.end(data);
+  // if (request.method === 'POST') {
+  console.log(response);
+  // }
+
+  console.log('####################################');
 };
 
 // These headers will allow Cross-Origin Resource Sharing (CORS).
@@ -66,11 +111,7 @@ var requestHandler = function(request, response) {
 //
 // Another way to get around this restriction is to serve you chat
 // client from this domain by setting up static file serving.
-var defaultCorsHeaders = {
-  'access-control-allow-origin': '*',
-  'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'access-control-allow-headers': 'content-type, accept',
-  'access-control-max-age': 10 // Seconds.
-};
 
-module.exports = requestHandler;
+
+// export default requestHandler;
+exports.requestHandler = requestHandler;
