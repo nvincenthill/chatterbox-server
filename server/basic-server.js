@@ -13,4 +13,8 @@ const ip = '127.0.0.1';
 const server = app.listen(port);
 console.log('Listening on http://' + ip + ':' + port);
 
+// serve static files
+app.use(express.static('../client'));
+
+// handle requests
 app.use(handleRequest);
